@@ -8,6 +8,9 @@ class Register extends Component {
         this.state = {
             name:'',
             password:'',
+            password2:'',
+            image:'',
+            type:'',
         }
     }
     AddUser(e) {
@@ -18,21 +21,25 @@ class Register extends Component {
             [data.textinput]: data.data
         }))
     }
-    ValidateUser(data){
+    ValidateUserNew(data){
         console.log(data);
-        if (data.name.trim() === '' || data.password.trim() === '') {
+        let datos = data;
+        if (data.name.trim() === '' || data.password.trim() === '' || data.password2.trim() === '') {
             return alert('Todos los campos son obligatorios');
+        }
+
+        if (data.password.trim() !== data.password2.trim()){
+            return alert('Las contraseñas no coinciden');
         }
         
         firebase.db.collection('users').doc(data.name).get()
         .then(data => { 
             console.log(data);
             if (!data.exists) {
-                this.setState(state => ({
-                    name: '',
-                    password: '',
-                }));
-                return alert('No existe usuario');
+                firebase.db.collection('users').doc(datos.name).set({password: datos.password, image:'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/123.jpg', user:'USER'});
+                this.props.navigation.navigate('Home');
+            } else {
+                alert('Este nombre de usuario ya existe');
             }
         })
         .catch(err => {
@@ -60,15 +67,16 @@ class Register extends Component {
                         ></TextInput>
                     </View>
                     <View>
-                        <Button
-                            title="Iniciar Sesion"
-                            onPress={() => {this.ValidateUser(this.state)}}
-                        ></Button>
+                        <TextInput
+                            placeholder="Repite contraseña"
+                            onChangeText={data => { this.TypeUser({textinput:'password2', data:data}) }}
+                            style={styles.input}
+                        ></TextInput>
                     </View>
                     <View>
-                    <Button
-                            title="Registrarse"
-                            onPress={() => {this.props.navigation.navigate('Home')}}
+                        <Button
+                            title="Registrar"
+                            onPress={() => {this.ValidateUserNew(this.state)}}
                         ></Button>
                     </View>
                 </View>

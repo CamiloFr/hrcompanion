@@ -1,10 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+import { Provider } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
 import InitialScreen from './screens/Login';
 import Register from './screens/Register';
+import ScreenForm from './screens/ScreenForm';
+import RRHH from './screens/RRHH'
 
 // Functions
 
@@ -18,6 +21,8 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={InitialScreen} />
         <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="HomeScreen" component={ScreenForm} />
+        <Stack.Screen name="RRHH" component={RRHH} />
       </Stack.Navigator>
     </NavigationContainer>
   );

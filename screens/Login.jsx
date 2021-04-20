@@ -23,6 +23,8 @@ class InitialScreen extends Component {
         if (data.name.trim() === '' || data.password.trim() === '') {
             return alert('Todos los campos son obligatorios');
         }
+
+        let campos = data;
         
         firebase.db.collection('users').doc(data.name).get()
         .then(data => { 
@@ -34,6 +36,18 @@ class InitialScreen extends Component {
                 }));
                 return alert('No existe usuario');
             }
+
+            let datos = data.data();
+            console.log(datos);
+            if (datos.password !== campos.password) {
+                return alert('Contraseñas no coinciden');
+            }
+            
+            if (datos.user.trim() === 'ADMI') {
+                return this.props.navigation.navigate('HomeScreen');
+            }
+
+            this.props.navigation.navigate('RRHH');
         })
         .catch(err => {
             console.error(err);
