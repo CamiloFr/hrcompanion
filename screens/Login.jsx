@@ -1,6 +1,8 @@
-import React, { useState, Component } from 'react';
+import React, { Component, useContext } from 'react';
 import { View, Text, Button, TextInput, ScrollView, StyleSheet } from 'react-native';
 import firebase from './../databases/firebase';
+import { connect } from 'react-redux';
+import * as actions from './../actions'
 
 class InitialScreen extends Component {
     constructor (props) {
@@ -19,7 +21,6 @@ class InitialScreen extends Component {
         }))
     }
     ValidateUser(data){
-        console.log(data);
         if (data.name.trim() === '' || data.password.trim() === '') {
             return alert('Todos los campos son obligatorios');
         }
@@ -28,7 +29,6 @@ class InitialScreen extends Component {
         
         firebase.db.collection('users').doc(data.name).get()
         .then(data => { 
-            console.log(data);
             if (!data.exists) {
                 this.setState(state => ({
                     name: '',
@@ -38,14 +38,17 @@ class InitialScreen extends Component {
             }
 
             let datos = data.data();
-            console.log(datos);
             if (datos.password !== campos.password) {
                 return alert('Contraseñas no coinciden');
             }
             
+
+            this.props.user_change({id: data.id, curriculum: datos.curriculum});
+
             if (datos.user.trim() === 'ADMI') {
                 return this.props.navigation.navigate('HomeScreen');
             }
+
 
             this.props.navigation.navigate('RRHH');
         })
@@ -54,6 +57,7 @@ class InitialScreen extends Component {
         })
     }
     render() {
+        console.log(this.props);
         return (
             <ScrollView
                 style={styles.container}
@@ -91,7 +95,11 @@ class InitialScreen extends Component {
     }
 }
 
-export default InitialScreen;
+const mapStateToProps = state => {
+    return {user: state.user}
+}
+
+export default connect(mapStateToProps, actions)(InitialScreen);
 // StyleSheet 
 
 const styles = StyleSheet.create({

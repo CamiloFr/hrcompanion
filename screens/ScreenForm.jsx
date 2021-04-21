@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Button, TextInput, ScrollView, StyleSheet } from 'react-native';
 import { ListItem, Avatar } from 'react-native-elements';
 import firebase from '../databases/firebase';
+import { connect } from 'react-redux';
 
 class ScreenForm extends Component {
     constructor (props) {
@@ -37,6 +38,7 @@ class ScreenForm extends Component {
         console.log(this.state.users);
       }
     render() {
+        console.log(this.props)
         return (
             <ScrollView
                 style={styles.container}
@@ -57,7 +59,11 @@ class ScreenForm extends Component {
     }
 }
 
-export default ScreenForm;
+const mapStateToProps = state => {
+    return {user: state.user}
+}
+
+export default connect(mapStateToProps)(ScreenForm);
 // StyleSheet 
 
 const styles = StyleSheet.create({
