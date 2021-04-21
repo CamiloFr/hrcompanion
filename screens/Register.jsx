@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Button, TextInput, ScrollView, StyleSheet } from 'react-native';
 import firebase from './../databases/firebase';
+import styles from './Stylesheet';
 
 class Register extends Component {
     constructor (props) {
@@ -51,33 +52,39 @@ class Register extends Component {
             <ScrollView
                 style={styles.container}
             >
-                <View style={styles.content}>
-                    <View>
-                        <TextInput
-                            placeholder="Correo electronico"
-                            onChangeText={data => { this.TypeUser({textinput:'name', data:data}) }}
-                            style={styles.input}
-                        ></TextInput>
-                    </View>
-                    <View>
-                        <TextInput
-                            placeholder="Contraseña"
-                            onChangeText={data => { this.TypeUser({textinput:'password', data:data}) }}
-                            style={styles.input}
-                        ></TextInput>
-                    </View>
-                    <View>
-                        <TextInput
-                            placeholder="Repite contraseña"
-                            onChangeText={data => { this.TypeUser({textinput:'password2', data:data}) }}
-                            style={styles.input}
-                        ></TextInput>
-                    </View>
-                    <View>
-                        <Button
-                            title="Registrar"
-                            onPress={() => {this.ValidateUserNew(this.state)}}
-                        ></Button>
+                <View style={styles.containercontent}>
+                    <View style={styles.contentlogin}>
+                        <View tyle={styles.contentinputlogin}>
+                            <Text>Usuario</Text>
+                            <TextInput
+                                style={styles.input}
+                                onChangeText={data => { this.TypeUser({textinput:'name', data:data}) }}
+                            />
+                        </View>
+                        <View tyle={styles.contentinputrrhh}>
+                            <Text
+                                style={styles.textrrhh}
+                            >Contraseña</Text>
+                            <TextInput
+                                style={styles.inputrrhh}
+                                onChangeText={data => { this.TypeUser({textinput:'password', data:data}) }}
+                            />
+                        </View>
+                        <View tyle={styles.contentinputrrhh}>
+                            <Text
+                                style={styles.textrrhh}
+                            >Repita contraseña</Text>
+                            <TextInput
+                                style={styles.inputrrhh}
+                                onChangeText={data => { this.TypeUser({textinput:'password2', data:data}) }}
+                            />
+                        </View>
+                        <View style={styles.contentinputrrhh}>
+                            <Button
+                                title="Registrar"
+                                onPress={() => {this.ValidateUserNew(this.state)}}
+                            ></Button>
+                        </View>
                     </View>
                 </View>
             </ScrollView>
@@ -86,21 +93,3 @@ class Register extends Component {
 }
 
 export default Register;
-// StyleSheet 
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#ece6da',
-    },
-    content:{
-        height:'100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    input: {
-        width: '80%',
-        paddingTop: 30,
-        padding: 10,
-    },
-  });

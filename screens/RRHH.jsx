@@ -1,142 +1,289 @@
 import React, { Component } from 'react';
-import { Button, ScrollView, StyleSheet, View, TextInput, Text } from 'react-native';
+import { CheckBox, Button, ScrollView, View, TextInput, Text } from 'react-native';
+// import { CheckBox } from 'react-native-elements'
 import firebase from './../databases/firebase';
+import Msgerrors from './components/Msgerrors';
 import { connect } from 'react-redux';
-import FormCurriculum from './FormCurriculum';
+import styles from './Stylesheet';
 
 
 class RRHH extends Component {
+    constructor (props) {
+        super(props);
+        this.state = {
+            names:'',
+            surnames:'',
+            iden:'',
+            typeiden:'',
+            telephone:'',
+            man: false,
+            girl: false,
+            single: false,
+            separate: false,
+            married: false,
+            widower: false,
+            country: '',
+            department:'',
+            city:'',
+            direction:'',
+            title:'',
+            description:'',
+            error: false,
+            msjerror: '',
+        }
+    }
+    componentDidMount(){
+        if(this.props.user.curriculum) {
+            this.setState({errornames:false, msjerror:'Ya esta diligenciado'});
+        }
+    }
+    ValidarFormRRHH(data){
+        console.log(data);
+        if (data.names.trim() === '' ||  data.surnames === ''){
+            return this.setState({errornames:true, msjerror:'Faltan nombres o apellidos'});
+        }
+
+        if (data.iden.trim() === '' || data.typeiden.trim() === '') {
+            return this.setState({errornames:true, msjerror:'Falta identificacion y tipo de identificación'});
+        }
+
+        if (data.man === false && data.girl === false) {
+            return this.setState({errornames:true, msjerror:'Falta sexo'});
+        }
+
+        if (data.single === false && data.married === false && data.separate === false && data.windowe === false) {
+            return this.setState({errornames:true, msjerror:'Falta estado civil'});
+        }
+
+        if (data.telephone.trim() === '') {
+            return this.setState({errornames:true, msjerror:'Falta telefono'});
+        }
+
+        if (data.country.trim() === '') {
+            return this.setState({errornames:true, msjerror:'Falta pais'});
+        }
+
+        if (data.department.trim() === '') {
+            return this.setState({errornames:true, msjerror:'Falta departamento'});
+        }
+
+        if (data.city.trim() === '') {
+            return this.setState({errornames:true, msjerror:'Falta ciudad'});
+        }
+
+        if (data.direction.trim() === '') {
+            return this.setState({errornames:true, msjerror:'Falta direccion'});
+        }
+
+        this.setState({errornames:false, msjerror:''});
+    }
+    TypeUser(data) {
+        this.setState(state => ({
+            [data.textinput]: data.data
+        }))
+    }
     render() {
-        console.log(this.props);
-        console.log(this.props.user.curriculum);
         return (
             <ScrollView
                 style={styles.container}
             >
-                <View style={{ display:'flex', width:'100%', alignItems: 'center', justifyContent: 'center'}}>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Nombres</Text>
+                {
+                    this.props.user.curriculum
+                    ?
+                        <Msgerrors error={this.state.msjerror}></Msgerrors>
+                    :
+                        null
+                }
+                {
+                    this.state.errornames
+                    ?
+                        <Msgerrors error={this.state.msjerror}></Msgerrors>
+                    :
+                        null
+                }
+                <View style={styles.content}>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Nombres *</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'names', data:data}) }}
                             placeholder="Nombres"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Apellidos</Text>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Apellidos *</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'surnames', data:data}) }}
                             placeholder="Apellidos"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Identificación</Text>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Identificación *</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'iden', data:data}) }}
                             placeholder="Identificación"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Tipo</Text>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Tipo *</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'typeiden', data:data}) }}
                             placeholder="Tipo"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Genero</Text>
-                        <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
-                            placeholder="Genero"
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Genero *</Text>
+                        <CheckBox
+                            value={this.state.man}
+                            onValueChange={() => this.setState({ man: !this.state.man })}
                         />
-                    </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Estado Civil</Text>
-                        <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
-                            placeholder="Estado Civil"
+                        <Text
+                            style={styles.textrrhh}
+                        >Masculino</Text>
+                        <CheckBox
+                            value={this.state.girl}
+                            onValueChange={() => this.setState({ girl: !this.state.girl })}
                         />
+                        <Text
+                            style={styles.textrrhh}
+                        >Femenino</Text>
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Teléfono</Text>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Estado Civil *</Text>
+                        <CheckBox
+                            value={this.state.single}
+                            onValueChange={() => this.setState({ single: !this.state.single })}
+                        />
+                        <Text
+                            style={styles.textrrhh}
+                        >Soltero</Text>
+                        <CheckBox
+                            value={this.state.married}
+                            onValueChange={() => this.setState({ married: !this.state.married })}
+                        />
+                        <Text
+                            style={styles.textrrhh}
+                        >Casado</Text>
+                    </View>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        ></Text>
+                        <CheckBox
+                            value={this.state.separate}
+                            onValueChange={() => this.setState({ separate: !this.state.separate })}
+                        />
+                        <Text
+                            style={styles.textrrhh}
+                        >Separado</Text>
+                        <CheckBox
+                            value={this.state.widower}
+                            onValueChange={() => this.setState({ widower: !this.state.widower })}
+                        />
+                        <Text
+                            style={styles.textrrhh}
+                        >Viudo</Text>
+                    </View>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Teléfono *</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'telephone', data:data}) }}
                             placeholder="Teléfono"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Pais</Text>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Pais *</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'country', data:data}) }}
                             placeholder="Pais"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Departamento</Text>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Departamento *</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'department', data:data}) }}
                             placeholder="Departamento"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Ciudad</Text>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Ciudad *</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'city', data:data}) }}
                             placeholder="Ciudad"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Dirección</Text>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Dirección *</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'direction', data:data}) }}
                             placeholder="Dirección"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
+                    <View style={styles.contentinputrrhh}>
                         <Text>Perfil Profesional</Text>
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Titulo</Text>
+                    <View
+                        style={{
+                            margin: '1%',
+                            borderBottomColor: 'black',
+                            borderBottomWidth: 1,
+                        }}
+                    />
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Titulo</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'title', data:data}) }}
                             placeholder="Titulo"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
-                        <Text>Descripción de su perfil</Text>
+                    <View style={styles.contentinputrrhh}>
+                        <Text
+                            style={styles.textrrhh}
+                        >Descripción de su perfil</Text>
                         <TextInput
-                            // style={styles.input}
-                            // onChangeText={onChangeNumber}
-                            // value={number}
+                            style={styles.inputrrhh}
+                            onChangeText={data => { this.TypeUser({textinput:'description', data:data}) }}
                             placeholder="Descripcion"
                         />
                     </View>
-                    <View style={{ display:'flex', width:'80%', marginTop:'' }}>
+                    <View style={styles.contentinputlogin}>
                         <Button 
                             title="Registrar"
+                            color="#459b37"
+                            onPress={()=>{this.ValidarFormRRHH(this.state)}}
                         ></Button>
                     </View>
                 </View>
@@ -150,12 +297,3 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps)(RRHH);
-// StyleSheet 
-
-const styles = StyleSheet.create({
-    input: {
-        width: '80%',
-        paddingTop: 30,
-        padding: 10,
-    },
-  });

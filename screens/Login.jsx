@@ -1,8 +1,10 @@
 import React, { Component, useContext } from 'react';
-import { View, Text, Button, TextInput, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Button, TextInput, ScrollView } from 'react-native';
 import firebase from './../databases/firebase';
 import { connect } from 'react-redux';
-import * as actions from './../actions'
+import * as actions from './../actions';
+import styles from './Stylesheet';
+import Msgerrors from './components/Msgerrors';
 
 class InitialScreen extends Component {
     constructor (props) {
@@ -10,6 +12,8 @@ class InitialScreen extends Component {
         this.state = {
             name:'',
             password:'',
+            errorfielduser: false,
+            msjerror: '',
         }
     }
     AddUser(e) {
@@ -22,8 +26,10 @@ class InitialScreen extends Component {
     }
     ValidateUser(data){
         if (data.name.trim() === '' || data.password.trim() === '') {
-            return alert('Todos los campos son obligatorios');
+            return this.setState({ errorfielduser: true, msjerror: 'Todos los campos son obligatorios' });
         }
+
+        this.setState({ errorfielduser: false });
 
         let campos = data;
         
@@ -34,16 +40,18 @@ class InitialScreen extends Component {
                     name: '',
                     password: '',
                 }));
-                return alert('No existe usuario');
+                return this.setState({ errorfielduser: true, msjerror: 'No existe usuario' });;
             }
 
             let datos = data.data();
             if (datos.password !== campos.password) {
-                return alert('Contraseñas no coinciden');
+                return this.setState({ errorfielduser: true, msjerror: 'Contraseña incorrecta' });
             }
             
 
             this.props.user_change({id: data.id, curriculum: datos.curriculum});
+
+            this.setState({name: '', password:''});
 
             if (datos.user.trim() === 'ADMI') {
                 return this.props.navigation.navigate('HomeScreen');
@@ -62,32 +70,46 @@ class InitialScreen extends Component {
             <ScrollView
                 style={styles.container}
             >
-                <View style={styles.content}>
-                    <View>
-                        <TextInput
-                            placeholder="Correo electronico"
-                            onChangeText={data => { this.TypeUser({textinput:'name', data:data}) }}
-                            style={styles.input}
-                        ></TextInput>
-                    </View>
-                    <View>
-                        <TextInput
-                            placeholder="Contraseña"
-                            onChangeText={data => { this.TypeUser({textinput:'password', data:data}) }}
-                            style={styles.input}
-                        ></TextInput>
-                    </View>
-                    <View>
-                        <Button
-                            title="Iniciar Sesion"
-                            onPress={() => {this.ValidateUser(this.state)}}
-                        ></Button>
-                    </View>
-                    <View>
-                    <Button
-                            title="Registrarse"
-                            onPress={() => {this.props.navigation.navigate('Register')}}
-                        ></Button>
+                <View style={styles.containercontent}>
+                    <View style={styles.contentlogin}>
+                        {
+                            this.state.errorfielduser
+                            ?
+                                <Msgerrors error={this.state.msjerror}></Msgerrors>
+                            :
+                                null
+                        }
+                        <View style={styles.contentinputlogin}>
+                            <Text>Usuario</Text>
+                            <TextInput
+                                onChangeText={data => { this.TypeUser({textinput:'name', data:data}) }}
+                                value={this.state.name}
+                                style={styles.input}
+                            ></TextInput>
+                        </View>
+                        <View style={styles.contentinputlogin}>
+                            <Text>Contraseña</Text>
+                            <TextInput
+                                secureTextEntry={true}
+                                onChangeText={data => { this.TypeUser({textinput:'password', data:data}) }}
+                                value={this.state.password}
+                                style={styles.input}
+                            ></TextInput>
+                        </View>
+                        <View style={styles.contentinputlogin}>
+                            <Button
+                                title="Iniciar Sesion"
+                                color="#459b37"
+                                onPress={() => {this.ValidateUser(this.state)}}
+                            ></Button>
+                        </View>
+                        <View style={styles.contentinputlogin}>
+                            <Button
+                                title="Registrarse"
+                                color="#0096d2"
+                                onPress={() => {this.props.navigation.navigate('Register')}}
+                            ></Button>
+                        </View>
                     </View>
                 </View>
             </ScrollView>
@@ -100,21 +122,3 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps, actions)(InitialScreen);
-// StyleSheet 
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#ece6da',
-    },
-    content:{
-        height:'100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    input: {
-        width: '80%',
-        paddingTop: 30,
-        padding: 10,
-    },
-  });
