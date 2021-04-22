@@ -50,6 +50,18 @@ class InitialScreen extends Component {
             
 
             this.props.user_change({id: data.id, curriculum: datos.curriculum});
+            let username = data.id;
+            let password = datos.password;
+            fetch('localhost:3000/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                })
+            })
 
             this.setState({name: '', password:''});
 
