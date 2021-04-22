@@ -11,7 +11,8 @@ import Reducers from './reducers';
 import InitialScreen from './screens/Login';
 import Register from './screens/Register';
 import ScreenForm from './screens/ScreenForm';
-import RRHH from './screens/RRHH'
+import Curriculum from './screens/RRHH';
+import Hoteles from './screens/Hotels';
 
 // Functions
 
@@ -29,7 +30,8 @@ export default function App() {
           <Stack.Screen name="Home" component={InitialScreen} />
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="HomeScreen" component={ScreenForm} />
-          <Stack.Screen name="RRHH" component={RRHH} />
+          <Stack.Screen name="Curriculum" component={Curriculum} />
+          <Stack.Screen name="Hotels" component={Hoteles} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

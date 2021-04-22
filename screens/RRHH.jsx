@@ -5,9 +5,10 @@ import firebase from './../databases/firebase';
 import Msgerrors from './components/Msgerrors';
 import { connect } from 'react-redux';
 import styles from './Stylesheet';
+import NavigationBar from './components/NavigationBar';
 
 
-class RRHH extends Component {
+class Curriculum extends Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -84,10 +85,10 @@ class RRHH extends Component {
     }
     render() {
         return (
-            <View style={{flex:1}}>
+            <View style={{flex:1}} >
                 <ScrollView
-                    style={{ height: '90vh' }}
                     style={styles.container}
+                    contentContainerStyle={styles.curriculumcontainer}
                 >
                     {
                         this.props.user.curriculum
@@ -290,12 +291,8 @@ class RRHH extends Component {
                         </View>
                     </View>
                 </ScrollView>
-                <View 
-                    style={{ width: '10vh', position: 'absolute'}}
-                >
-                    <Button
-                        title="Hoteles"
-                    ></Button>
+                <View style={styles.naviagtionBar}>
+                    <NavigationBar properties={this.props} />
                 </View>
             </View>
         )
@@ -306,4 +303,4 @@ const mapStateToProps = state => {
     return { user: state.user }
 }
 
-export default connect(mapStateToProps)(RRHH);
+export default connect(mapStateToProps)(Curriculum);

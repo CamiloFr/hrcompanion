@@ -72,6 +72,20 @@ const styles = StyleSheet.create({
         borderRadius: '3%',
         paddingTop: '10px',
         paddingBottom: '10px',
+    },
+    navigationBar:{
+        backgroundColor: '#FFFFFF',
+        height: 30,
+        position: 'absolute', 
+        flexDirection: 'row',
+        bottom: 0,
+        justifyContent: 'space-between'
+    },
+    curriculumcontainer:{
+        height: '80vh',
+    },
+    containerbuttonsnavigation: {
+        flex: 1,
     }
 });
 
