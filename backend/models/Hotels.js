@@ -16,7 +16,8 @@ var HotelSchema = mongoose.Schema(
         futbol:Boolean,
         tennis:Boolean,
         parking:Boolean,
-        photo:String
+        photo:String,
+        name:String,
     }
 )
 

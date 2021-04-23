@@ -12,6 +12,7 @@ import Register from './screens/Register';
 import ScreenForm from './screens/ScreenForm';
 import Curriculum from './screens/RRHH';
 import Hoteles from './screens/Hotels';
+import FilterHotels from './screens/FilterHotel';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,7 @@ export default function App() {
           <Stack.Screen name="HomeScreen" component={ScreenForm} />
           <Stack.Screen name="Curriculum" component={Curriculum} />
           <Stack.Screen name="Hotels" component={Hoteles} />
+          <Stack.Screen name="HotelFilter" component={FilterHotels} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
