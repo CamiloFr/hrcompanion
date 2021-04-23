@@ -1,13 +1,7 @@
 const user = require('../models/Users');
-const bcryptjs = require('bcryptjs');
-const { validationResult } = require('express-validator');
+const jwt = require('jsonwebtoken');
 
 exports.createUser = async (req, res) => {
-    const errores = validationResult(req);
-    if (!errores.isEmpty()){
-        return res.status(400).json({errores: errores.array})
-    }
-
     const { id, password } = req.body;
 
     try {
@@ -19,11 +13,21 @@ exports.createUser = async (req, res) => {
 
         usuario = new user(req.body);
 
-        const salt = await bcryptjs.genSalt(10);
-        usuario.password = await bcryptjs.hash(password, salt);
+        const payload = {
+            usuario: {
+                id: usuario.id,
+            }
+        };
+
+        jwt.sign(payload, process.env.SERCRETA, {
+            expiresIn: 3600
+        }, (error, token) => {
+            if (error) throw error;
+
+            res.json({ token:token });
+        });
 
         await usuario.save();
-        res.json({ msg: 'Usuario creado correctamente' });;
     } catch (error) {
         console.error(error);
         res.status(400).send('Hubo un error');

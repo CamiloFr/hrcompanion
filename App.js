@@ -1,6 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack'
 import { Provider } from 'react-redux';
@@ -14,13 +13,11 @@ import ScreenForm from './screens/ScreenForm';
 import Curriculum from './screens/RRHH';
 import Hoteles from './screens/Hotels';
 
-// Functions
-
 const Stack = createStackNavigator();
 
-// App
-
 export default function App() {
+
+  console.log(process.env.REACT_APP_BACKEND_URL)
   return (
     <Provider
       store={createStore(Reducers)}
