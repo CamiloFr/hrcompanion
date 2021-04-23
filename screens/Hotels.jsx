@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { View, Button, ScrollView, TextInput, Text } from 'react-native';
+import { View, Button, ScrollView, TextInput, Text, Flatlist } from 'react-native';
 import NavigationBar from './components/NavigationBar'
 import styles from './Stylesheet';
 import clientAxios from './../config/axios';
+import HotelList from './components/Hotellist'
 
 class Hoteles extends Component {
     constructor (props) {
@@ -30,16 +31,10 @@ class Hoteles extends Component {
                     contentContainerStyle={styles.curriculumcontainer}
                 >
                     <View style={styles.content}>
-                        <View style={styles.contentinputrrhh}>
-                            <Text
-                                style={styles.textrrhh}
-                            >Nombres *</Text>
-                            <TextInput
-                                style={styles.inputrrhh}
-                                onChangeText={data => { this.TypeUser({textinput:'names', data:data}) }}
-                                placeholder="Nombres"
-                            />
-                        </View>
+                        <FlatList
+                            data={this.props.hotels}
+                            renderItem={({item}) => <HotelList hotel={item} />}
+                        />
                     </View>
                 </ScrollView>
                 <View style={styles.naviagtionBar}>
