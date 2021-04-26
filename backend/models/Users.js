@@ -11,6 +11,7 @@ var UsersSchema = mongoose.Schema(
         password: String,
         curriculum: Boolean,
         type: String,
+        photo: String,
     }
 )
 

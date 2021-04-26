@@ -1,0 +1,48 @@
+[
+    {"title": "Ciudad"
+    },
+    { "title":"Villavicencio", "isChecked": false, "type":"city"
+    },
+    { "title":"Bogota", "isChecked": false, "type":"city"
+    },
+    { "title":"New York", "isChecked": false, "type":"city"
+    },
+    { "title":"Paris", "isChecked": false, "type":"city"
+    },
+    { "title":"Madrid", "isChecked": false, "type":"city"
+    },
+    { "title": "Departamento"
+    },
+    { "title":"Meta", "isChecked": false, "type":"department"
+    },
+    { "title":"Cundinamarca", "isChecked": false, "type":"department"
+    },
+    { "title":"New York State", "isChecked": false, "type":"department"
+    },
+    { "title":"Ile-de-France", "isChecked": false, "type":"department"
+    },
+    { "title":"Comunidad de Madrid", "isChecked": false, "type":"department"
+    },
+    {"title": "Pais"
+    },
+    { "title":"Colombia", "isChecked": false, "type":"country"
+    },
+    { "title":"Estador Unidos", "isChecked": false, "type":"country"
+    },
+    { "title":"Francia", "isChecked": false, "type":"country"
+    },
+    { "title":"España", "isChecked": false, "type":"country"
+    },
+    {"title": "Actividades"
+    },
+    { "title":"Tenis", "isChecked": false, "type":"tennis"
+    },
+    { "title":"Futbol", "isChecked": false, "type":"futbol"
+    },
+    { "title":"Jacuzzi", "isChecked": false, "type":"jacuzzi"
+    },
+    { "title":"Piscina", "isChecked": false, "type":"piscina"
+    },
+    { "title":"Parking", "isChecked": false, "type":"parking"
+    }
+]

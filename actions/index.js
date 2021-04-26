@@ -4,17 +4,3 @@ export const user_change = (user) => {
         payload: user
     }
 }
-
-export const filter_change = (filter) => {
-    return {
-        type: 'filter_change',
-        payload: filter
-    }
-}
-
-export const country_change = (country) => {
-    return {
-        type: 'country_change',
-        payload: country
-    }
-}

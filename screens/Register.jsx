@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import { View, Text, Button, TextInput, ScrollView, StyleSheet } from 'react-native';
-import firebase from './../databases/firebase';
+import React from 'react';
+import clientAxios from './../config/axios';
+import { View, Text, Button, TextInput, ScrollView } from 'react-native';
+import Msgerrors from './components/Msgerrors';
 import styles from './Stylesheet';
 
-class Register extends Component {
+class Register extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -12,10 +13,8 @@ class Register extends Component {
             password2:'',
             image:'',
             type:'',
+            errorfielduser: false,
         }
-    }
-    AddUser(e) {
-        alert('Lo he presionado');
     }
     TypeUser(data) {
         this.setState(state => ({
@@ -23,8 +22,6 @@ class Register extends Component {
         }))
     }
     ValidateUserNew(data){
-        console.log(data);
-        let datos = data;
         if (data.name.trim() === '' || data.password.trim() === '' || data.password2.trim() === '') {
             return alert('Todos los campos son obligatorios');
         }
@@ -32,54 +29,61 @@ class Register extends Component {
         if (data.password.trim() !== data.password2.trim()){
             return alert('Las contraseñas no coinciden');
         }
-        
-        firebase.db.collection('users').doc(data.name).get()
-        .then(data => { 
+
+        let image = `https://source.unsplash.com/random/200x200?sig=${(Math.random().toFixed(2)*100).toString()}`
+        clientAxios.post('/api/users', { 'id':data.name, 'password':data.password, 'photo':image, 'curriculum': false, 'type': 'USER'})
+        .then(data => {
             console.log(data);
-            if (!data.exists) {
-                firebase.db.collection('users').doc(datos.name).set({password: datos.password, image:'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/123.jpg', user:'USER'});
-                this.props.navigation.navigate('Home');
-            } else {
-                alert('Este nombre de usuario ya existe');
-            }
+            this.props.navigation.navigate('Home');
         })
         .catch(err => {
             console.error(err);
+            return this.setState({ errorfielduser: true, msjerror: err.response.data.msg })
+
         })
+
+        // NUMERO AL AZAR PARA OBTENER IMAGENES PARA LOS USUARIOS
+        // Math.random().toFixed(2)*100
+        // https://source.unsplash.com/random/200x200?sig=1
     }
     render() {
         return (
             <ScrollView
                 style={styles.container}
             >
-                <View style={styles.containercontent}>
+                  <View style={styles.containercontent}>
                     <View style={styles.contentlogin}>
-                        <View tyle={styles.contentinputlogin}>
+                        {
+                            this.state.errorfielduser
+                            ?
+                                <Msgerrors error={this.state.msjerror}></Msgerrors>
+                            :
+                                null
+                        }
+                        <View style={styles.contentinputlogin}>
                             <Text>Usuario</Text>
                             <TextInput
                                 style={styles.input}
                                 onChangeText={data => { this.TypeUser({textinput:'name', data:data}) }}
                             />
                         </View>
-                        <View tyle={styles.contentinputrrhh}>
-                            <Text
-                                style={styles.textrrhh}
-                            >Contraseña</Text>
+                        <View style={styles.contentinputlogin}>
+                            <Text>Contraseña</Text>
                             <TextInput
-                                style={styles.inputrrhh}
+                                secureTextEntry={true}
+                                style={styles.input}
                                 onChangeText={data => { this.TypeUser({textinput:'password', data:data}) }}
                             />
                         </View>
-                        <View tyle={styles.contentinputrrhh}>
-                            <Text
-                                style={styles.textrrhh}
-                            >Repita contraseña</Text>
+                        <View style={styles.contentinputlogin}>
+                            <Text>Repita contraseña</Text>
                             <TextInput
-                                style={styles.inputrrhh}
+                                secureTextEntry={true}
+                                style={styles.input}
                                 onChangeText={data => { this.TypeUser({textinput:'password2', data:data}) }}
                             />
                         </View>
-                        <View style={styles.contentinputrrhh}>
+                        <View style={styles.contentinputlogin}>
                             <Button
                                 title="Registrar"
                                 onPress={() => {this.ValidateUserNew(this.state)}}

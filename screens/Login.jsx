@@ -1,12 +1,12 @@
-import React, { Component, useContext } from 'react';
-import { View, Text, Button, TextInput, ScrollView } from 'react-native';
-import firebase from './../databases/firebase';
+import React from 'react';
 import { connect } from 'react-redux';
+import clientAxios from './../config/axios';
+import Msgerrors from './components/Msgerrors';
+import { View, Text, Button, TextInput, ScrollView } from 'react-native';
 import * as actions from './../actions';
 import styles from './Stylesheet';
-import Msgerrors from './components/Msgerrors';
 
-class InitialScreen extends Component {
+class Login extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -16,56 +16,37 @@ class InitialScreen extends Component {
             msjerror: '',
         }
     }
-    AddUser(e) {
-        alert('Lo he presionado');
-    }
     TypeUser(data) {
         this.setState(state => ({
             [data.textinput]: data.data
         }))
     }
     ValidateUser(data){
+        // console.log(this.props, navigation);
         if (data.name.trim() === '' || data.password.trim() === '') {
             return this.setState({ errorfielduser: true, msjerror: 'Todos los campos son obligatorios' });
         }
 
         this.setState({ errorfielduser: false });
-
-        let campos = data;
         
-        firebase.db.collection('users').doc(data.name).get()
-        .then(data => { 
-            if (!data.exists) {
-                this.setState(state => ({
-                    name: '',
-                    password: '',
-                }));
-                return this.setState({ errorfielduser: true, msjerror: 'No existe usuario' });;
-            }
-
-            let datos = data.data();
-            if (datos.password !== campos.password) {
-                return this.setState({ errorfielduser: true, msjerror: 'Contraseña incorrecta' });
-            }
-            
-
-            this.props.user_change({id: data.id, curriculum: datos.curriculum});
-
+        clientAxios.post('/api/auth', { 'id':data.name, 'password': data.password })
+        .then(data => {
+            let {  id, curriculum, type, photo } = data.data;
+            this.props.user_change({id: id, curriculum: curriculum, type: type, photo: photo});
             this.setState({name: '', password:''});
-
-            if (datos.user.trim() === 'ADMI') {
-                return this.props.navigation.navigate('HomeScreen');
-            }
-
 
             this.props.navigation.navigate('Curriculum');
         })
-        .catch(err => {
-            console.error(err);
+        .catch(error => {
+            console.error(error);
+            this.setState(state => ({
+                name: '',
+                password: '',
+            }));
+            return this.setState({ errorfielduser: true, msjerror: error });
         })
     }
     render() {
-        console.log(this.props);
         return (
             <ScrollView
                 style={styles.container}
@@ -99,7 +80,7 @@ class InitialScreen extends Component {
                         <View style={styles.contentinputlogin}>
                             <Button
                                 title="Iniciar Sesion"
-                                color="#459b37"
+                                color="#4a8957"
                                 onPress={() => {this.ValidateUser(this.state)}}
                             ></Button>
                         </View>
@@ -118,7 +99,9 @@ class InitialScreen extends Component {
 }
 
 const mapStateToProps = state => {
-    return {user: state.user}
+    return {
+        user: state.user
+    }
 }
 
-export default connect(mapStateToProps, actions)(InitialScreen);
+export default connect(mapStateToProps, actions)(Login);

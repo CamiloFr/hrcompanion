@@ -1,1 +1,0 @@
-export const DIGITAR_USUARIO = 'USUARIO';

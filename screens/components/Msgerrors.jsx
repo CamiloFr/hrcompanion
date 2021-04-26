@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import styles from './../Stylesheet';
 import { Text } from 'react-native-elements';
 
-class Msgerrors extends React.Component {
+export default class Msgerrors extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -28,6 +28,4 @@ class Msgerrors extends React.Component {
 
 Msgerrors.defaultProps = {
     error: '',
-  }
-
-export default Msgerrors;
+}

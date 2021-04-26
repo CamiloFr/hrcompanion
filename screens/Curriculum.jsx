@@ -1,14 +1,36 @@
-import React, { Component } from 'react';
-import { CheckBox, Button, ScrollView, View, TextInput, Text } from 'react-native';
-// import { CheckBox } from 'react-native-elements'
-import firebase from './../databases/firebase';
-import Msgerrors from './components/Msgerrors';
+import React from 'react';
 import { connect } from 'react-redux';
-import styles from './Stylesheet';
+import clientAxios from './../config/axios';
+import Msgerrors from './components/Msgerrors';
 import NavigationBar from './components/NavigationBar';
+import { CheckBox, Button, ScrollView, View, TextInput, Text } from 'react-native';
+import styles from './Stylesheet';
+
+const initialValues = { 
+    names:'',
+    surnames:'',
+    iden:'',
+    typeiden:'',
+    telephone:'',
+    man: false,
+    girl: false,
+    single: false,
+    separate: false,
+    married: false,
+    widower: false,
+    country: '',
+    department:'',
+    city:'',
+    direction:'',
+    title:'',
+    description:'',
+    error: false,
+    msjerror: '',
+    errornames: false,
+};
 
 
-class Curriculum extends Component {
+class Curriculum extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -31,6 +53,7 @@ class Curriculum extends Component {
             description:'',
             error: false,
             msjerror: '',
+            errornames: false,
         }
     }
     componentDidMount(){
@@ -77,6 +100,37 @@ class Curriculum extends Component {
         }
 
         this.setState({errornames:false, msjerror:''});
+
+        clientAxios.post('/api/curriculum', {
+            'user': this.props.user.id,
+            'nombres': data.names,
+            'apellidos': data.surnames,
+            'identificacion':data.iden,
+            'tipo':data.typeiden,
+            'man': data.man,
+            'girl': data.girl,
+            'single': data.single,
+            'married': data.married,
+            'separate': data.separate,
+            'windowe': data.windowe,
+            'telefono':data.telephone,
+            'pais':data.country,
+            'departamento':data.department,
+            'ciudad':data.city,
+            'direccion':data.direcction,
+            'titulo': data.title,
+            'descripcion': data.description,
+            'photo': `https://source.unsplash.com/random/200x200?sig=${(Math.random().toFixed(2)*100).toString()}`
+        })
+        .then(data => { 
+            console.log(data);
+            this.setState(state => initialValues);
+        })
+        .catch(err => {
+            console.error(err);
+            return this.setState({ errornames: true, msjerror: err.response.data.msg })
+
+        })
     }
     TypeUser(data) {
         this.setState(state => ({
@@ -85,26 +139,28 @@ class Curriculum extends Component {
     }
     render() {
         return (
-            <View style={{flex:1}} >
-                <ScrollView
-                    style={styles.container}
-                    contentContainerStyle={styles.curriculumcontainer}
-                >
-                    {
-                        this.props.user.curriculum
-                        ?
-                            <Msgerrors error={this.state.msjerror}></Msgerrors>
-                        :
-                            null
-                    }
-                    {
-                        this.state.errornames
-                        ?
-                            <Msgerrors error={this.state.msjerror}></Msgerrors>
-                        :
-                            null
-                    }
-                    <View style={styles.content}>
+            <ScrollView
+                style={styles.container}
+            >
+                <View style={styles.containercontent}>
+                    <View style={styles.contentcurriculum}>
+                        {
+                            this.props.user.curriculum
+                            ?
+                                <Msgerrors error={this.state.msjerror}></Msgerrors>
+                            :
+                                null
+                        }
+                        {
+                            this.state.errornames
+                            ?
+                                <Msgerrors error={this.state.msjerror}></Msgerrors>
+                            :
+                                null
+                        }
+                        <Text
+                            style={{  color: '#459b37', fontSize: 24, textAlign: 'center' }}
+                        >Ingrese sus datos</Text>
                         <View style={styles.contentinputrrhh}>
                             <Text
                                 style={styles.textrrhh}
@@ -252,7 +308,7 @@ class Curriculum extends Component {
                                 placeholder="Dirección"
                             />
                         </View>
-                        <View style={styles.contentinputrrhh}>
+                        <View style={styles.contentinputrrhh} style={{ textAlign: 'center', marginTop: '3%' }}>
                             <Text>Perfil Profesional</Text>
                         </View>
                         <View
@@ -283,18 +339,15 @@ class Curriculum extends Component {
                             />
                         </View>
                         <View style={styles.contentinputlogin}>
-                            <Button 
+                            <Button
                                 title="Registrar"
                                 color="#459b37"
                                 onPress={()=>{this.ValidarFormRRHH(this.state)}}
                             ></Button>
                         </View>
                     </View>
-                </ScrollView>
-                <View style={styles.naviagtionBar}>
-                    <NavigationBar properties={this.props} />
                 </View>
-            </View>
+            </ScrollView>
         )
     }
 }

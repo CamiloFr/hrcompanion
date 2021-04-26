@@ -1,7 +1,7 @@
 const hotel = require('../models/Hotels');
 
 exports.allHotels = async (req, res) => {
-    console.log('aca');
+    console.log(req.body);
     try {
         let hotels = await hotel.find();
         res.json(hotels);
